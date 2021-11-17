@@ -50,7 +50,7 @@ const FilmesTrailer = ({navigation, route}) => {
             </Snackbar>
             <Row>
                 <Col size={50}>
-                    <Title>Videos relacionados</Title>
+                    <Title>Trailer e Videos relacionados</Title>
                 </Col>
             </Row>
             <Row>
