@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { ScrollView } from 'react-native'
 import { Avatar, Button, List, Paragraph } from 'react-native-paper'
 import apiFilmes from '../services/apiFilmes'
-import Carregando from './Carregando'
 
 const Reviews = ({navigation, route}) => {
     
@@ -18,9 +17,9 @@ const Reviews = ({navigation, route}) => {
     }, [])
 
     const imagemAuthor = (details) => {
-        return details && details.avatar_path != "" ?
-            <Avatar.Image size={50} source={{ uri: 'https://image.tmdb.org/t/p/w500/' + details.avatar_path }} /> :
-            <Avatar.Icon size={50} icon="movie" />
+        return details.avatar_path ?
+            <Avatar.Image size={50} source={{ uri: (details.avatar_path.indexOf('https') > -1 ? details.avatar_path.substring(1, details.avatar_path.length-1) : 'https://image.tmdb.org/t/p/w500' + details.avatar_path) }} /> :
+            <Avatar.Icon size={50} icon="duck" />
     }
 
     return (
