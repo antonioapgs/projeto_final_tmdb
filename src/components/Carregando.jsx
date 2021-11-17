@@ -1,7 +1,8 @@
 import React from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 const Carregando = () => {
+
     return (
         <View style={[styles.container, styles.horizontal]}>
             <ActivityIndicator />

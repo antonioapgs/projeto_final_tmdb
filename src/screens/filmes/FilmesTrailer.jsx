@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Linking, ScrollView, TouchableOpacity, Image, Text } from 'react-native'
-import { Card, Paragraph, Snackbar, Title } from 'react-native-paper'
+import { Linking, ScrollView, TouchableOpacity, Image, Text } from 'react-native'
+import { Button, Card, Divider, List, Paragraph, Title } from 'react-native-paper'
 import Carregando from '../../components/Carregando'
 import apiFilmes from '../../services/apiFilmes'
 import { Row, Column as Col } from 'react-native-responsive-grid'
@@ -9,9 +9,6 @@ const FilmesTrailer = ({navigation, route}) => {
 
     const [filme, setFilme] = useState({})
     const [videos, setVideos] = useState([])
-    const [visible, setVisible] = useState(false);
-    const onToggleSnackBar = () => setVisible(!visible);
-    const onDismissSnackBar = () => setVisible(false);
 
     useEffect(() => {
         const id = route.params.id
@@ -21,7 +18,7 @@ const FilmesTrailer = ({navigation, route}) => {
         })
 
         apiFilmes.get(`/movie/${id}/videos`).then(resultado => {
-            setVideos(resultado.data.results)
+            setVideos(resultado.data.results.sort((a, b) => a.name > b.name ? 1 : -1))
         })
 
     }, [])
@@ -30,30 +27,29 @@ const FilmesTrailer = ({navigation, route}) => {
         <ScrollView>
             <Card
                 key={filme.id}
-                margin={10}
-                onPress={onToggleSnackBar}>
+                margin={10}>
                 <Card.Cover source={{ uri: 'https://image.tmdb.org/t/p/w500/' + filme.backdrop_path }} />
                 <Card.Content>
                     <Title>{filme.title}</Title>
+                    <Divider  />
                     <Paragraph>{filme.overview}</Paragraph>
+                    <Divider  />
+                    <Paragraph>{`Qtd. de avaliações: ${filme.vote_count}`}</Paragraph>
+                    <Divider  />
+                    <Paragraph>{`Nota média: ${filme.vote_average}`}</Paragraph>
+                    <Divider  />
                 </Card.Content>
+                <Card.Actions>
+                    <Button onPress={() => navigation.push('elenco', {id: filme.id })}>Elenco</Button>
+                    <Button onPress={() => navigation.push('reviews', {id: filme.id })}>Reviews</Button>
+              </Card.Actions>
             </Card>
-            <Snackbar visible={visible}
-                onDismiss={onDismissSnackBar}
-                action={{
-                    label: 'Ver trailer',
-                    onPress: () => {
-                        //make something
-                    },
-                }}>
-                {`Este filme possui ${filme.vote_count} avaliações e está avaliado em ${filme.vote_average}.`}
-            </Snackbar>
-            <Row>
-                <Col size={50}>
-                    <Title>Trailer e Videos relacionados</Title>
+            <Row margin={10}>
+                <Col size={100}>
+                    <Title>Trailer e outros videos relacionados</Title>
                 </Col>
             </Row>
-            <Row>
+            <Row margin={10}>
                 {!videos.length && <Carregando />}
                 {videos.map(video => (
                     <Col size={50} key={video.id} >
@@ -65,7 +61,7 @@ const FilmesTrailer = ({navigation, route}) => {
                                 style={{ height: 300, margin: 5 }}
                                 source={{ uri: 'https://image.tmdb.org/t/p/w500/' + filme.poster_path }}
                             />
-                            <Text>{video.name}</Text>
+                            <Paragraph>{video.name}</Paragraph>
                         </TouchableOpacity>            
                     </Col>    
                 ))}

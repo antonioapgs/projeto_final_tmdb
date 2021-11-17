@@ -14,34 +14,33 @@ const Home = ({navigation}) => {
     useEffect(() => {
 
         apiFilmes.get(`/genre/movie/list?language=pt-BR`).then(resultado => {
-            setGeneros(resultado.data.genres)
+            setGeneros(resultado.data.genres.sort((a, b) => a.name > b.name ? 1 : -1))
+            setGenerosFiltrados(resultado.data.genres.sort((a, b) => a.name > b.name ? 1 : -1))
         })
 
     }, [])
 
     const searchFilterFunction = (text) => {
         if (text) {
-          const newData = generos.filter(function (genero) {
-            const itemData = genero.name
-              ? genero.name.toUpperCase()
-              : ''.toUpperCase();
-            const textData = text.toUpperCase();
-            return itemData.indexOf(textData) > -1;
-          });
+            const newData = generos.filter(function (genero) {
+                const itemData = genero.name
+                ? genero.name.toUpperCase()
+                : ''.toUpperCase();
+                const textData = text.toUpperCase();
+                return itemData.indexOf(textData) > -1;
+            });
 
-          setGenerosFiltrados(newData);
-          setFiltro(text);
+            setGenerosFiltrados(newData);
+            setFiltro(text);
         } else {
-          setGenerosFiltrados(generos);
-          setFiltro('');
+            setGenerosFiltrados(generos);
+            setFiltro('');
         }
     };
 
     const getMovies = (idGenre) => {
-        console.log(idGenre);
         apiFilmes.get(`/discover/movie?language=pt-BR&with_genres=${idGenre}`).then(resultado => {
-            console.log(resultado);
-            setMovies(resultado.data.results)
+            setMovies(resultado.data.results.sort((a, b) => a.title > b.title ? 1 : -1))
         })
     };
 
@@ -62,7 +61,7 @@ const Home = ({navigation}) => {
                         left={props => <List.Icon {...props} icon="movie" />}
                         onPress={() => getMovies(item.id)}>
                             {!movies.length && <Carregando />}
-                            {movies.sort().map(movie => (
+                            {movies.map(movie => (
                                 <List.Item button 
                                     key={movie.id}
                                     title={movie.title} 
